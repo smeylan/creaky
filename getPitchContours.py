@@ -47,7 +47,10 @@ def getPitchContour(soundfile, vre, nsteps, analysisDir):
 	
 	formants = audiolabel.LabelManager(from_file=formants_name, from_type='table',  fields_in_head=False, fields = "t1,rms,f1,f2,f3,f4,f0")
 	formants.scale_by(0.001)  # convert time column to seconds    
-     # find all the vowel labels in the phone tier and process them           
+     # find all the vowel labels in the phone tier and process them  
+
+	vowelF0s = [] 
+	vowelTimes = []         
 	for v, m in pm.tier('phone').search(vre, return_match=True):
 		dur = v.duration  # "v" is a textgrid label object, one of it's properties is duration
 		if dur < 0.029 or (dur > 1 and v.t1 != 0): # don't look at really short vowels
@@ -61,13 +64,14 @@ def getPitchContour(soundfile, vre, nsteps, analysisDir):
 			if word=="HAND" or word=="STAND":
 				vowel = "AEN"
 		inc = dur/(nsteps)  # extract formant measurements from 25%, 50% and 75% of vowel duration   
-
-		vowelF0s = []        		
+		        		
 		for i in range(1,nsteps):  # find the three locations in the vowel
 			ttime = v.t1 + (inc*i)    # time of step
 			meas = formants.labels_at(ttime)
 			vowelF0s.append(float(meas.f0.text))
-			return({'formants': vowelF0s, 'phraseIndex':phrase, 'file':soundfile,'error':error})
+			vowelTimes.append(float(meas.f0.t1))
+	
+	return({'formants': vowelF0s, 'times': vowelTimes, 'phraseIndex':phrase, 'file':soundfile,'error':error})
 			#!!!what do we need to pull out of meas? how many samples
 
 
@@ -96,3 +100,7 @@ if __name__ == '__main__':
 	else:
 		subjectDFs = [getPitchContourForSubject(x, analysisDir, vre, nsteps, utterances) for x in subjects['random_id']]		
 	results = pandas.concat(subjectDFs)
+
+
+
+
