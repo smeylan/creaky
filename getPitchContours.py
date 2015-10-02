@@ -133,14 +133,15 @@ def getUtteranceContourPlot(results, pI, utterances, pp):
 	xmax = np.nanmax(rpi['phoneIndex'])[0] 
 
 
-	fig = plt.figure()
+	fig = plt.figure(figsize=(14, 6))
 	ax = fig.add_subplot(1,1,1)                                                      
 	#need the labels
 
 	major_ticks = range(0,xmax+1)
 	ax.set_xticks(major_ticks)      # we have five points per vowel         
 	ax.set_xticklabels(rpi_label_collapsed['p'])
-	
+	ax.tick_params(axis='x', which='major', labelsize=7)
+
 	for gender, color, label in [('m', 'r--','men'),('f', 'b-', 'women')]:
 		genderDF = rpi.loc[rpi['gender'] == gender]
 		genderDF = genderDF.dropna() 
@@ -148,6 +149,7 @@ def getUtteranceContourPlot(results, pI, utterances, pp):
 	#	plt.plot(genderDF['phoneIndex'],genderDF['f0'],color, label=label)
 		#ordering needs to be a function of the time
 
+			
 	plt.title(utterances[pI])
 	plt.ylim(0,ymax)
 	plt.xlim(0,xmax)
