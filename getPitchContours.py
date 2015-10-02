@@ -147,9 +147,7 @@ def getUtteranceContourPlot(results, pI, utterances, pp):
 		genderDF = genderDF.dropna() 
 		plt.plot(genderDF['phoneIndex'],genderDF['f0'],color, label=label)
 	#	plt.plot(genderDF['phoneIndex'],genderDF['f0'],color, label=label)
-		#ordering needs to be a function of the time
-
-			
+		#ordering needs to be a function of the time			
 	plt.title(utterances[pI])
 	plt.ylim(0,ymax)
 	plt.xlim(0,xmax)
@@ -158,6 +156,15 @@ def getUtteranceContourPlot(results, pI, utterances, pp):
 	plt.ylabel('F0')
 	plt.grid(True)
 	plt.savefig(pp, format='pdf')
+
+def subjectF0Hist(resultsNoZerosMerged, random_id):
+	singleSubject = resultsNoZerosMerged.loc[resultsNoZerosMerged['random_id'] ==random_id].dropna(subset=['f0'])
+	
+	plt.hist(list(singleSubject['f0']))
+	plt.title("F0 for participant "+str(random_id))
+	plt.xlabel("F0")
+	plt.ylabel("Frequency")
+	plt.show()
 
 
 if __name__ == '__main__':
@@ -195,3 +202,5 @@ if __name__ == '__main__':
 	for i in range(0,6):
 		getUtteranceContourPlot(resultsNoZerosMerged, i, utterances, pp)
 	pp.close()
+	
+	subjectF0Hist(resultsNoZerosMerged, 2328645)
